@@ -88,3 +88,22 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+// sys_shmem_access
+int
+sys_shmem_access(void) 
+{
+   // Read page number from user space.
+   int page_number = 0;
+   return (int) shmem_access(page_number);
+;
+}
+
+// sys_shmem_count
+int
+sys_shmem_count(void) 
+{
+   // Read page number from user space.
+   int page_number = 0;
+   return shmem_count(page_number);
+}
