@@ -385,6 +385,22 @@ void shmeminit(void){
 // shmem_access and shmem_count
 
 // hardest: shmem_access
+//     mappages()
+
+// tricky:
+//  think about clean up
+//  freevm() -> right here in vm.c. Be careful using this
+// follow the wait() code
+//  make sure NOT to free SHARED pages
+
+// sz marks the end of a heap
+// max address space in xv6 is one less than 640k
+
 // Notes: look through allocuvm and see what it does. 
 // We might need to do something similar.
-// Keep in mind calls to kalloc() and memset()
+// Keep in mind calls to kalloc(), memset(), and mappages().
+
+
+
+
+
