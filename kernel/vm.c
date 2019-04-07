@@ -400,7 +400,12 @@ void shmeminit(void){
 // We might need to do something similar.
 // Keep in mind calls to kalloc(), memset(), and mappages().
 
+void* shmem_access(){
+}
 
+int shmem_count(int pg_num){
+  return shmem_count[pg_num];
+}
 
 
 
