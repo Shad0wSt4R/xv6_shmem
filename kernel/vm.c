@@ -366,7 +366,7 @@ copyout(pde_t *pgdir, uint va, void *p, uint len)
 }
 
 #define SHMEM_PAGES (4)
-int shmem_count[SHMEM_PAGES];
+int shmemCount[SHMEM_PAGES];
 void *shmem_addr[SHMEM_PAGES];
 
 // Initialize the ability to use shared memory
@@ -374,7 +374,7 @@ void shmeminit(void){
   cprintf("shmeminit\n");
   int i;
   for(i = 0; i < SHMEM_PAGES; i++){
-    shmem_count[i] = 0;
+    shmemCount[i] = 0;
     if ((shmem_addr[i] = kalloc()) == 0)
       panic("shmeminit failed");
     cprintf("%x\n", (unsigned int) shmem_addr[i]);
@@ -400,11 +400,15 @@ void shmeminit(void){
 // We might need to do something similar.
 // Keep in mind calls to kalloc(), memset(), and mappages().
 
-void* shmem_access(){
+// Allows a user program to request one of the shared pages and sees the shared page and allocates memory
+// in the virtual address space and maps that address to a physical frame that was allocated by the kernel.
+void* shmem_access(int pg_num){
+  void* p = ;
+  return p;
 }
 
 int shmem_count(int pg_num){
-  return shmem_count[pg_num];
+  return shmemCount[pg_num];
 }
 
 
