@@ -364,3 +364,27 @@ copyout(pde_t *pgdir, uint va, void *p, uint len)
   }
   return 0;
 }
+
+#define SHMEM_PAGES (4)
+int shmem_count[SHMEM_PAGES];
+void *shmem_addr[SHMEM_PAGES];
+
+// Initialize the ability to use shared memory
+void shmeminit(void){
+  cprintf("shmeminit\n");
+  int i;
+  for(i = 0; i < SHMEM_PAGES; i++){
+    shmem_count[i] = 0;
+    if ((shmem_addr[i] = kalloc()) == 0)
+      panic("shmeminit failed");
+    cprintf("%x\n", (unsigned int) shmem_addr[i]);
+  }
+}
+
+// add two syscalls
+// shmem_access and shmem_count
+
+// hardest: shmem_access
+// Notes: look through allocuvm and see what it does. 
+// We might need to do something similar.
+// Keep in mind calls to kalloc() and memset()
