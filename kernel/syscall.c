@@ -38,6 +38,14 @@ fetchstr(struct proc *p, uint addr, char **pp)
   for(s = *pp; s < ep; s++)
     if(*s == 0)
       return s - *pp;
+
+  if(addr >= USERTOP)
+    return -1;
+  *pp = (char*)addr;
+  ep = (char*)p->sz;
+  for(s = *pp; s < (char*) USERTOP; s++)
+    if(*s == 0)
+      return s - *pp;
   return -1;
 }
 
