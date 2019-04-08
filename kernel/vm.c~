@@ -332,8 +332,8 @@ copyuvm(pde_t *pgdir, uint sz, void** old_shmem_access, void** new_shmem_access)
   for(i=0;i<SHMEM_PAGES;i++){
     new_shmem_access[i] = old_shmem_access[i];
     if(new_shmem_access[i] != NULL){
-      shmemCount[i]++;
-      if(mappages(d,new_shmem_access[i],PGSIZE,(uint)shmem_paddr[i],PTE_W|PTE_U)<0){
+      shmem_counter[i]++;
+      if(mappages(d,new_shmem_access[i],PGSIZE,(uint)shmem_padder[i],PTE_W|PTE_U)<0){
 	goto bad;
       }
     }
