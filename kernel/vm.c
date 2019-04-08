@@ -318,6 +318,18 @@ copyuvm(pde_t *pgdir, uint sz)
     if(mappages(d, (void*)i, PGSIZE, PADDR(mem), PTE_W|PTE_U) < 0)
       goto bad;
   }
+
+  for(i = proc->shmem_start; i < USERTOP; i += PGSIZE){
+     if((pte = walkpgdir(pgdir, (void*)i, 0)) == 0)
+       panic("copyuvm: pte should exist");
+     if(!(*pte & PTE_P))
+       panic("copyuvm: page not present");
+     pa = PTE_ADDR(*pte);
+     memmove(mem, (char*)pa, PGSIZE);
+     if(mappages(d, (void*)i, PGSIZE, PADDR(mem), PTE_W|PTE_U) < 0)
+       goto bad;
+  }
+
   return d;
 
 bad:
@@ -367,7 +379,7 @@ copyout(pde_t *pgdir, uint va, void *p, uint len)
 
 #define SHMEM_PAGES (4)
 int shmemCount[SHMEM_PAGES];
-void *shmem_addr[SHMEM_PAGES];
+void *shmem_paddr[SHMEM_PAGES];
 
 // Initialize the ability to use shared memory
 void shmeminit(void){
@@ -375,9 +387,9 @@ void shmeminit(void){
   int i;
   for(i = 0; i < SHMEM_PAGES; i++){
     shmemCount[i] = 0;
-    if ((shmem_addr[i] = kalloc()) == 0)
+    if ((shmem_paddr[i] = kalloc()) == 0)
       panic("shmeminit failed");
-    cprintf("%x\n", (unsigned int) shmem_addr[i]);
+    cprintf("%x\n", (unsigned int) shmem_paddr[i]);
   }
 }
 
@@ -403,8 +415,15 @@ void shmeminit(void){
 // Allows a user program to request one of the shared pages and sees the shared page and allocates memory
 // in the virtual address space and maps that address to a physical frame that was allocated by the kernel.
 void* shmem_access(int pg_num){
-  void* p = ;
-  return p;
+  if(proc->virt_addr[pg_num] != NULL){
+     return (void*) proc->virt_addr[pg_num];
+  }
+
+  proc->shmem_start = proc->shmem_start - 4096;
+  char *va = (char*) proc->shmem_start;			// easier to read.
+  mappages(proc->pgdir, va, PGSIZE, PADDR(shmem_paddr[pg_num]), PTE_P | PTE_W | PTE_U);
+  proc->virt_addr[pg_num] = va;
+  return (void*) va;
 }
 
 int shmem_count(int pg_num){

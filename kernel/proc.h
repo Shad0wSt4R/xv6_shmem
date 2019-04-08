@@ -74,6 +74,8 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+  int shmem_start;	       // Beginning of shared memory
+  char* virt_addr[4];	       // virtual addresses
 };
 
 // Process memory is laid out contiguously, low addresses first:
