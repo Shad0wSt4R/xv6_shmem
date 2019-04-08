@@ -10,6 +10,10 @@ extern char data[];  // defined in data.S
 
 static pde_t *kpgdir;  // for use in scheduler()
 
+#define SHMEM_PAGES (4)
+int shmemCount[SHMEM_PAGES];
+void *shmem_paddr[SHMEM_PAGES];
+
 // Allocate one page table for the machine for the kernel address
 // space for scheduler processes.
 void
@@ -268,9 +272,10 @@ deallocuvm(pde_t *pgdir, uint oldsz, uint newsz)
     pte = walkpgdir(pgdir, (char*)a, 0);
     if(pte && (*pte & PTE_P) != 0){
       pa = PTE_ADDR(*pte);
-      if(pa == 0)
+      if(pa == 0) 
         panic("kfree");
-      kfree((char*)pa);
+      if(pa != (uint)shmem_paddr[0] && pa != (uint)shmem_paddr[1] && pa != (uint)shmem_paddr[2] && pa != (uint)shmem_paddr[3])
+      	kfree((char*)pa);
       *pte = 0;
     }
   }
@@ -377,9 +382,6 @@ copyout(pde_t *pgdir, uint va, void *p, uint len)
   return 0;
 }
 
-#define SHMEM_PAGES (4)
-int shmemCount[SHMEM_PAGES];
-void *shmem_paddr[SHMEM_PAGES];
 
 // Initialize the ability to use shared memory
 void shmeminit(void){

@@ -45,6 +45,7 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+  p->shmem_start = USERTOP;	// Ensure all non-exed'd processes have shmem_start initialized to USERTOP.
   release(&ptable.lock);
 
   // Allocate kernel stack if possible.
@@ -110,6 +111,10 @@ growproc(int n)
   
   sz = proc->sz;
   if(n > 0){
+    if((sz + n) >= proc->shmem_start){		// Prevent the heap from overflowing into allocated shared pages.
+      cprintf("shmem_start is %d\n",proc->shmem_start);
+      return -1;
+    }
     if((sz = allocuvm(proc->pgdir, sz, sz + n)) == 0)
       return -1;
   } else if(n < 0){
@@ -142,6 +147,7 @@ fork(void)
     return -1;
   }
   np->sz = proc->sz;
+  np->shmem_start = proc->shmem_start;
   np->parent = proc;
   *np->tf = *proc->tf;
 
@@ -195,7 +201,9 @@ exit(void)
         wakeup1(initproc);
     }
   }
-
+  for(int i = p->shmem_start; i < USERTOP; i++) {
+    //memset(p->virt_addr[i], 0, PGSIZE);
+  }
   // Jump into the scheduler, never to return.
   proc->state = ZOMBIE;
   sched();

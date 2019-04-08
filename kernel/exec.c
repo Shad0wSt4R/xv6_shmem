@@ -86,7 +86,7 @@ exec(char *path, char **argv)
   proc->sz = sz;
   proc->tf->eip = elf.entry;  // main
   proc->tf->esp = sp;
-  proc->shmem_start = USERTOP;
+  proc->shmem_start = USERTOP;		// Set shmem_start to USERTOP for all exec'd processes.
   switchuvm(proc);
   freevm(oldpgdir);
 

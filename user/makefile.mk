@@ -46,6 +46,9 @@ USER_CLEAN := user/bin $(USER_PROGS) $(USER_OBJECTS) $(USER_DEPS)
 # add include dir to search path for headers
 USER_CPPFLAGS += -I include
 
+# Generate debugging symbols for USER PROGS. This is for debugging only.
+USER_CPPFLAGS += -ggdb
+
 # do not search standard system paths for headers
 USER_CPPFLAGS += -nostdinc
 

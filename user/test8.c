@@ -24,6 +24,7 @@ int main()
 	while (1)
 	{
 		ptr2 = sbrk(1024);
+		printf(1, "ptr2 equals %d\t ptr equals %d\n", (uint) (char*)ptr2, (uint) (char*)ptr);
 		if(ptr2 >= ptr && ptr2 != (char *) -1)
 		{
 			INFO();	
