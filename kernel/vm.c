@@ -419,6 +419,10 @@ void* shmem_access(int pg_num){
      return (void*) proc->virt_addr[pg_num];
   }
 
+  if((proc->sz + PGSIZE) >= USERTOP){
+     return NULL;
+  }
+
   proc->shmem_start = proc->shmem_start - 4096;
   char *va = (char*) proc->shmem_start;			// easier to read.
   mappages(proc->pgdir, va, PGSIZE, PADDR(shmem_paddr[pg_num]), PTE_P | PTE_W | PTE_U);
