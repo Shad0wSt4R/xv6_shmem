@@ -273,7 +273,7 @@ deallocuvm(pde_t *pgdir, uint oldsz, uint newsz)
     if(pte && (*pte & PTE_P) != 0){
       pa = PTE_ADDR(*pte);
       if(pa == 0)
-        panic("kfree");
+        panic("kfree:deallocuvm");
       kfree((char*)pa);
       *pte = 0;
     }
@@ -451,7 +451,7 @@ void* shmem_access(int pg_num){
    return NULL;
   }
   if(mappages(proc->pgdir,va,PGSIZE,PADDR(shmem_paddr[pg_num]),PTE_W|PTE_U) ==-1){
-    panic("shmem_access");
+    return NULL;
   }
   proc->shmem++;
   shmemCount[pg_num]++;
