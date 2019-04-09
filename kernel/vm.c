@@ -444,13 +444,14 @@ void* shmem_access(int pg_num){
     return proc->shmems[pg_num];
   }
 
+  //va = virtual address
   void* va = (void *) (USERTOP - ((proc->shmem + 1) * PGSIZE));
 
   if(proc->sz >= (int) va){
    return NULL;
   }
   if(mappages(proc->pgdir,va,PGSIZE,PADDR(shmem_paddr[pg_num]),PTE_W|PTE_U) ==-1){
-    return NULL;
+    panic("shmem_access");
   }
   proc->shmem++;
   shmemCount[pg_num]++;

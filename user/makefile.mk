@@ -28,6 +28,17 @@ USER_PROGS := \
         test9\
 	test10\
 	test11\
+	test12\
+	test13\
+	test14\
+	test15\
+	test16\
+	test17\
+	test18\
+	test19\
+	echo_one\
+	echo_two\
+	echo_three
 
 USER_PROGS := $(addprefix user/, $(USER_PROGS))
 

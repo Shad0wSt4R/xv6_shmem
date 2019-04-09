@@ -163,10 +163,10 @@ fork(void)
   np->state = RUNNABLE;
   safestrcpy(np->name, proc->name, sizeof(proc->name));
 
-  //  np->shmem = proc->shmem;
+  //np->shmem = proc->shmem;
   //for(i=0;i<4;i++){
   //  np->shmems[i] = proc->shmems[i];
-  // }
+  //}
   
   return pid;
 }
